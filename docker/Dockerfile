@@ -4,7 +4,7 @@
 
 FROM golang:1.25-bookworm AS build
 WORKDIR /src
-ENV CGO_ENABLED=0 GOFLAGS=-trimpath
+ENV CGO_ENABLED=0 GOFLAGS=-trimpath GOTOOLCHAIN=auto
 # @latest for now — pin to a specific tag once you've settled on one.
 # derper makes no CLI/version stability promise upstream, same as tailcat.
 RUN go install tailscale.com/cmd/derper@latest
