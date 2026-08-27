@@ -13,6 +13,7 @@ services:
       - --hostname=wag.wolfandcrow.tech   # point this DNS name's A/AAAA at the GCP static IP
       - --certmode=letsencrypt
       - --certdir=/var/lib/derper-certs
+      - --c=/var/lib/derper-certs/derper.key
       - --a=:443
       - --http-port=80
       - --stun-port=3478
