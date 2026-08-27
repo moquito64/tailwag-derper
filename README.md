@@ -36,8 +36,11 @@ Once it's up, pin it into a saved key so the token is self-contained (no
 DERP map fetch at connect time):
 
 ```
-tailwag genkey --region=wag.wolfandcrow.tech --embed-derp-map
+tailwag genkey --region=wag.wolfandcrow.tech
 ```
+The hostname form of `--region` already fully embeds this relay's node
+info in the token. Don't combine it with `--embed-derp-map` — that flag
+assumes a numeric DERP-map region ID and panics on a hostname region.
 
 That gives you a `tc...` token embedding this relay's DERP node info
 directly — the thing to hand to tailwag clients on kyner/hector/merlin/wart.
