@@ -1,0 +1,24 @@
+services:
+  derper:
+    image: ghcr.io/moquito64/tailwag-derper:latest
+    container_name: tailwag-derper
+    restart: unless-stopped
+    # host networking: derper/STUN want the real client source IP:port,
+    # and it needs to bind 80/443/3478 itself without Docker's NAT layer
+    # in the way. Fine here since this VM does nothing else.
+    network_mode: host
+    volumes:
+      - certs:/var/lib/derper-certs
+    command:
+      - --hostname=wag.wolfandcrow.tech   # point this DNS name's A/AAAA at the GCP static IP
+      - --certmode=letsencrypt
+      - --certdir=/var/lib/derper-certs
+      - --a=:443
+      - --http-port=80
+      - --stun-port=3478
+      - --stun=true
+      - --derp=true
+      - --verify-clients=false            # no local tailscaled here to verify against; token possession is the gate
+
+volumes:
+  certs:

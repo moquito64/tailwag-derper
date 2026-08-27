@@ -1,0 +1,27 @@
+#!/bin/bash
+# Runs once at first boot (GCP metadata startup-script). Idempotent
+# enough to re-run safely if you ever need to via `google_metadata_script_runner startup`.
+set -euxo pipefail
+
+if ! command -v docker >/dev/null 2>&1; then
+  apt-get update
+  apt-get install -y ca-certificates curl gnupg git
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+    > /etc/apt/sources.list.d/docker.list
+  apt-get update
+  apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+fi
+
+if [ ! -d /opt/tailwag-derper/.git ]; then
+  git clone ${repo_url} /opt/tailwag-derper
+else
+  git -C /opt/tailwag-derper pull --ff-only
+fi
+
+cd /opt/tailwag-derper/docker
+docker compose pull
+docker compose up -d
