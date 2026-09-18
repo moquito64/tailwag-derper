@@ -5,9 +5,9 @@
 FROM golang:1.25-bookworm AS build
 WORKDIR /src
 ENV CGO_ENABLED=0 GOFLAGS=-trimpath GOTOOLCHAIN=auto
-# @latest for now — pin to a specific tag once you've settled on one.
+# Pinned so a rebuild is a deliberate diff, not whatever @latest resolves to.
 # derper makes no CLI/version stability promise upstream, same as tailcat.
-RUN go install tailscale.com/cmd/derper@latest
+RUN go install tailscale.com/cmd/derper@v1.102.4
 
 # distroless/base, NOT -nonroot: derper binds 80/443 itself, which
 # means either running as root in-container or granting
